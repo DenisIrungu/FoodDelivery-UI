@@ -6,6 +6,8 @@ class MyButton extends StatelessWidget {
   final IconData? icon;
   final Color color;
   final foregroundColor;
+  final Widget? leadingIcon;
+
 
   const MyButton(
       {required this.text,
@@ -13,11 +15,13 @@ class MyButton extends StatelessWidget {
       required this.color,
       this.foregroundColor,
       this.icon,
+      this.leadingIcon,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
+      icon: leadingIcon ?? const SizedBox.shrink(),
       onPressed: onPress,
       label: Text(
         text,

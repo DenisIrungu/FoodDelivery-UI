@@ -2,8 +2,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
 
+import 'signin.dart';
+
 class SplashScreen3 extends StatelessWidget {
-  const SplashScreen3({super.key});
+  final PageController pageController;
+  const SplashScreen3({super.key, required this.pageController});
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +197,12 @@ class SplashScreen3 extends StatelessWidget {
                     height: 56,
                     child: MyButton(
                       text: 'Get Started',
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SignIn()),
+                        );
+                      },
                       color: const Color(0xFF0F2A12),
                       foregroundColor: Colors.white,
                     ),
@@ -202,7 +210,12 @@ class SplashScreen3 extends StatelessWidget {
                   const SizedBox(height: 30),
                   MyButton(
                     text: 'Sign In',
-                    onPress: () {},
+                    onPress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SignIn()),
+                      );
+                    },
                     color: Colors.grey.shade500,
                     foregroundColor: Color(0xFF0F2A12),
                   ),

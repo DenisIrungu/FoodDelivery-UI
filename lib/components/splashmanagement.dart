@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:shlih_kitchen/screens/signin.dart';
 import 'package:shlih_kitchen/screens/splashscreen1.dart';
 import 'package:shlih_kitchen/screens/splashscreen2.dart';
 import 'package:shlih_kitchen/screens/splashscreen3.dart';
 
-class SplashManager extends StatefulWidget {
-  const SplashManager({super.key});
+class SplashScreenManager extends StatefulWidget {
+  const SplashScreenManager({super.key});
 
   @override
-  State<SplashManager> createState() => _SplashManagerState();
+  State<SplashScreenManager> createState() => _SplashScreenManagerState();
 }
 
-class _SplashManagerState extends State<SplashManager> {
+class _SplashScreenManagerState extends State<SplashScreenManager> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
+    _startAutoAdvance();
   }
 
   @override
@@ -25,58 +27,57 @@ class _SplashManagerState extends State<SplashManager> {
     super.dispose();
   }
 
+  void _startAutoAdvance() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        if (_currentPage < 2) {
+          _pageController.nextPage(
+              duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        } else {
+          _navigateToMainScreen();
+        }
+      }
+    });
+  }
+
   void _navigateToMainScreen() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const MainScreen()),
+      MaterialPageRoute(builder: (_) => const SignIn()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onSurface,
-      body: Column(
+    return Container(
+      color: Colors.grey[50],
+      height: MediaQuery.of(context).size.height,
+      child: Column(
         children: [
           Expanded(
             child: PageView(
               controller: _pageController,
               onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
+                if (mounted) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                }
               },
-              children: const [
-                SplashScreen1(),
-                SplashScreen2(),
-                SplashScreen3(),
+              children: [
+                SplashScreen1(
+                  pageController: _pageController,
+                ),
+                SplashScreen2(
+                  pageController: _pageController,
+                ),
+                SplashScreen3(
+                  pageController: _pageController,
+                ),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: 3,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(1.5),
-              ),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('SHLIH Kitchen')),
-      body: const Center(child: Text('Welcome to SHLIH Kitchen!')),
     );
   }
 }

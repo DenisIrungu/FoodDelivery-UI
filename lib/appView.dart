@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/components/splashmanagement.dart';
-import 'package:shlih_kitchen/screens/splashscreen1.dart';
+import 'package:shlih_kitchen/screens/signin.dart';
 
 class AppView extends StatelessWidget {
   const AppView({super.key});
@@ -13,7 +13,10 @@ class AppView extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.light(
               surface: Colors.white, onSurface: Color(0xFF0F2A12))),
-      home: SplashManager(),
+      home: SplashScreenManager(),
+      routes: {
+        '/signin': (context) => const SignIn(),
+      },
     );
   }
 }

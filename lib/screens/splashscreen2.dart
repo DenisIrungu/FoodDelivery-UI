@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
+import 'package:shlih_kitchen/screens/signin.dart';
 
 class SplashScreen2 extends StatelessWidget {
-  const SplashScreen2({super.key});
+  final PageController pageController;
+  const SplashScreen2({super.key, required this.pageController});
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +196,13 @@ class SplashScreen2 extends StatelessWidget {
                     height: 56,
                     child: MyButton(
                       text: 'Continue',
-                      onPress: () {},
+                      onPress: () {
+                        pageController.animateToPage(
+                          2, // Go to third splash screen
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
                       color: const Color(0xFF0F2A12),
                       foregroundColor: Colors.white,
                     ),
@@ -202,7 +210,12 @@ class SplashScreen2 extends StatelessWidget {
                   const SizedBox(height: 30),
                   MyButton(
                     text: 'Sign In',
-                    onPress: () {},
+                    onPress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SignIn()),
+                      );
+                    },
                     color: Colors.grey.shade500,
                     foregroundColor: Color(0xFF0F2A12),
                   ),

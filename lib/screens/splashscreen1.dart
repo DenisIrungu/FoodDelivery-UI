@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SplashScreen1 extends StatelessWidget {
-  const SplashScreen1({super.key});
+  final PageController pageController;
+  const SplashScreen1({super.key, required this.pageController});
 
   @override
   Widget build(BuildContext context) {

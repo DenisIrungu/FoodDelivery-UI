@@ -66,6 +66,8 @@ flutter:
      - assets/favfood3.jpg
      - assets/favfood4.jpg
      - assets/log1.png
+     - assets/google.jpg
+     - assets/apple.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

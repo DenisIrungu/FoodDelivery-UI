@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatefulWidget {
@@ -67,14 +66,14 @@ class _MyTextFieldState extends State<MyTextField> {
           labelStyle: TextStyle(color: widget.labelTextColor),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFFF9500)),
+              borderSide: BorderSide(color: Color(0xFF0F2A12)),
               borderRadius: BorderRadius.circular(10)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey)),
+              borderSide: BorderSide(color: Colors.black)),
           contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         ),
-        style: TextStyle(color: Colors.white, fontSize: 20),
+        style: TextStyle(color: Color(0xFF0F2A12), fontSize: 20),
       ),
     );
   }
