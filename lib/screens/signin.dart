@@ -31,7 +31,8 @@ class _SignInState extends State<SignIn> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/splash', (route) => false);
           },
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
@@ -103,7 +104,9 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/forgot');
+                  },
                   child: Text(
                     'Forgot your Password?',
                     style: TextStyle(
@@ -134,7 +137,9 @@ class _SignInState extends State<SignIn> {
                     width: 1,
                   ),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
                       child: Text(
                         'Sign Up',
                         style: TextStyle(
