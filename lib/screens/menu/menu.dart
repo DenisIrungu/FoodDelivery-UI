@@ -22,7 +22,7 @@ class _MenuState extends State<Menu> {
     'Featured',
     'Fast Food',
     'Soup',
-    'Salad'
+    'Top of the week'
   ];
 
   @override
@@ -33,6 +33,12 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredItems = selectedCategoryIndex == 0
+        ? foodItems
+        : foodItems
+            .where(
+                (item) => item['category'] == categories[selectedCategoryIndex])
+            .toList();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -132,15 +138,16 @@ class _MenuState extends State<Menu> {
               ),
               GridView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: foodItems.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filteredItems.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 3 / 4,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16),
+                    crossAxisCount: 2,
+                    childAspectRatio: 3 / 4,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
                   itemBuilder: (context, index) {
-                    final item = foodItems[index];
+                    final item = filteredItems[index];
                     return MyGrid(
                       imagePath: item['image']!,
                       title: item['name']!,
