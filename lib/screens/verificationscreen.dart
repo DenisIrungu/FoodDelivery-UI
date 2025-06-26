@@ -41,36 +41,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     setState(() {});
   }
 
-  void _onBackspace(int index) {
-    if (index > 0) {
-      _controllers[index - 1].clear();
-      _focusNodes[index - 1].requestFocus();
-    }
-  }
-
-  void _onNumberPadTap(String number) {
-    for (int i = 0; i < _controllers.length; i++) {
-      if (_controllers[i].text.isEmpty) {
-        _controllers[i].text = number;
-        _onCodeChanged(number, i);
-        break;
-      }
-    }
-  }
-
-  void _onBackspacePad() {
-    for (int i = _controllers.length - 1; i >= 0; i--) {
-      if (_controllers[i].text.isNotEmpty) {
-        _controllers[i].clear();
-        _focusNodes[i].requestFocus();
-        verificationCode =
-            _controllers.map((controller) => controller.text).join();
-        setState(() {});
-        break;
-      }
-    }
-  }
-
   void _resendCode() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Verification code resent!')),
@@ -80,7 +50,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void _continueVerification() {
     if (verificationCode.length == 4) {
       print('Verification code: $verificationCode');
-      // Navigate to next screen or verify code
+
+      Navigator.pushNamed(context, '/congrats');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -225,105 +196,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               ),
 
               const SizedBox(height: 40),
-
-              // Number Pad
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    // First Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildNumberButton('1'),
-                        _buildNumberButton('2'),
-                        _buildNumberButton('3'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Second Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildNumberButton('4'),
-                        _buildNumberButton('5'),
-                        _buildNumberButton('6'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Third Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildNumberButton('7'),
-                        _buildNumberButton('8'),
-                        _buildNumberButton('9'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Fourth Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const SizedBox(width: 60), // Empty space
-                        _buildNumberButton('0'),
-                        _buildBackspaceButton(),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 40),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNumberButton(String number) {
-    return GestureDetector(
-      onTap: () => _onNumberPadTap(number),
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Center(
-          child: Text(
-            number,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBackspaceButton() {
-    return GestureDetector(
-      onTap: _onBackspacePad,
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.backspace_outlined,
-            size: 24,
-            color: Colors.black,
           ),
         ),
       ),

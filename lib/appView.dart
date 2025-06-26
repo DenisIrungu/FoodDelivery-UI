@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/components/splashmanagement.dart';
+import 'package:shlih_kitchen/screens/congrats.dart';
 import 'package:shlih_kitchen/screens/forgotpassword.dart';
+import 'package:shlih_kitchen/screens/home.dart';
+import 'package:shlih_kitchen/screens/mainscreen.dart';
+import 'package:shlih_kitchen/screens/menu/all.dart';
 import 'package:shlih_kitchen/screens/signin.dart';
 import 'package:shlih_kitchen/screens/signup.dart';
 
@@ -21,6 +25,9 @@ class AppView extends StatelessWidget {
         '/signin': (context) => const SignIn(),
         '/signup': (context) => const SignUp(),
         '/forgot': (context) => const ForgotPassword(),
+        '/congrats': (context) => const Congrats(),
+        '/home': (context) => const MainScreen(),
+        '/all': (context) => const AllMenu()
       },
     );
   }
