@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shlih_kitchen/components/splashmanagement.dart';
 import 'package:shlih_kitchen/screens/congrats.dart';
 import 'package:shlih_kitchen/screens/forgotpassword.dart';
-import 'package:shlih_kitchen/screens/home.dart';
 import 'package:shlih_kitchen/screens/mainscreen.dart';
 import 'package:shlih_kitchen/screens/menu/all.dart';
-import 'package:shlih_kitchen/screens/signin.dart';
-import 'package:shlih_kitchen/screens/signup.dart';
+import 'package:shlih_kitchen/auth/signin.dart';
+import 'package:shlih_kitchen/auth/signup.dart';
+import 'package:shlih_kitchen/themes/theme_provider.dart';
 
 class AppView extends StatelessWidget {
   const AppView({super.key});
@@ -16,9 +17,7 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       title: 'S H L I H  K I T C H E N',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          colorScheme: ColorScheme.light(
-              surface: Colors.white, onSurface: Color(0xFF0F2A12))),
+      theme: Provider.of<ThemeProvider>(context).themeData,
       home: SplashScreenManager(),
       routes: {
         '/splash': (context) => const SplashScreenManager(),

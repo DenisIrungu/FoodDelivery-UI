@@ -64,13 +64,6 @@ class _AllMenuState extends State<AllMenu> {
             SizedBox(
               height: 10,
             ),
-            Text(
-              'Our Food',
-              style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
             SizedBox(
               height: 10,
             ),

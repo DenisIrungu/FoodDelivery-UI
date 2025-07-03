@@ -3,7 +3,8 @@ import 'package:shlih_kitchen/components/mybutton.dart';
 import 'package:shlih_kitchen/components/mytextfield.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final void Function()? onTap;
+  const SignIn({super.key, this.onTap});
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -117,7 +118,9 @@ class _SignInState extends State<SignIn> {
               MyButton(
                 foregroundColor: Colors.white,
                 text: 'Sign In',
-                onPress: () {},
+                onPress: () {
+                  Navigator.pushNamed(context, '/home');
+                },
                 color: Color(0xFF0F2A12),
               ),
               SizedBox(
@@ -134,19 +137,28 @@ class _SignInState extends State<SignIn> {
                         fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    width: 1,
+                    width: 5,
+                    // ),
+                    // TextButton(
+                    //     onPressed: () {
+                    //       Navigator.pushNamed(context, '/signup');
+                    //     },
+                    //     child: Text(
+                    //       'Sign Up',
+                    //       style: TextStyle(
+                    //           color: Color(0xFF0F2A12),
+                    //           fontSize: 16,
+                    //           fontWeight: FontWeight.bold),
+                    //     )
                   ),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: Text(
-                        'Sign Up',
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: Text('Sign Up',
                         style: TextStyle(
                             color: Color(0xFF0F2A12),
                             fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ))
+                            fontWeight: FontWeight.bold)),
+                  )
                 ],
               ),
               Row(

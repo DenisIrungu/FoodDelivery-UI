@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:shlih_kitchen/components/food_item.dart';
+import 'package:provider/provider.dart';
+import 'package:shlih_kitchen/components/my_current_location.dart';
+import 'package:shlih_kitchen/components/my_description_box.dart';
+import 'package:shlih_kitchen/components/mydrawer.dart';
 import 'package:shlih_kitchen/components/mytextfield.dart';
+import 'package:shlih_kitchen/models/restaurant.dart';
+import 'package:shlih_kitchen/screens/menu/cart.dart';
+
+import '../models/foods.dart';
+import 'foodpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +28,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the Restaurant instance using Provider
+    final restaurant = Provider.of<Restaurant>(context);
+    // Filter menu items for TopOfTheWeek category
+    final topOfTheWeekItems = restaurant.menu
+        .where((food) => food.category == FoodCategory.TopOfTheWeek)
+        .toList();
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -43,8 +58,18 @@ class _HomePageState extends State<HomePage> {
             ),
             onPressed: () {},
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Cart()));
+            },
+            icon: Icon(Icons.shopping_cart),
+            color: Theme.of(context).colorScheme.tertiary,
+            iconSize: 30,
+          )
         ],
       ),
+      drawer: MyDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: SafeArea(
@@ -73,9 +98,9 @@ class _HomePageState extends State<HomePage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Top of the week',
+                  'Top of the Week',
                   style: TextStyle(
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.tertiary,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
@@ -86,33 +111,40 @@ class _HomePageState extends State<HomePage> {
                 height: 220,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: foodItems.length,
+                  itemCount: topOfTheWeekItems.length,
                   itemBuilder: (context, index) {
-                    final item = foodItems[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              item['image']!,
-                              width: 140,
-                              height: 120,
-                              fit: BoxFit.cover,
+                    final item = topOfTheWeekItems[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FoodPage(food: item))),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                item.imagePath,
+                                width: 140,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            item['name']!,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            item['price']!,
-                            style: const TextStyle(color: Colors.green),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            Text(
+                              item.title,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '\$${item.price.toStringAsFixed(2)}',
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -147,46 +179,12 @@ class _HomePageState extends State<HomePage> {
       child: Stack(
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Delivery to Home',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Uhuru street no 14, Bumber',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[300],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withOpacity(0.2),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: const Text(
-                  '2.4 km',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+              // My current location
+              MyCurrentLocation(),
+
+              // My description box
+              MyDescriptionBox()
             ],
           ),
           const Positioned(

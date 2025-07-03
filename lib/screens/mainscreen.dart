@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/screens/home.dart';
-import 'package:shlih_kitchen/screens/menu/all.dart';
 import 'package:shlih_kitchen/screens/menu/menu.dart';
 import 'package:shlih_kitchen/screens/menu/cart.dart';
 import 'package:shlih_kitchen/screens/menu/profile.dart';

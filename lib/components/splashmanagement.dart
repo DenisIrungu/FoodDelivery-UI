@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shlih_kitchen/screens/signin.dart';
+import 'package:shlih_kitchen/auth/signin.dart';
 import 'package:shlih_kitchen/screens/splashscreen1.dart';
 import 'package:shlih_kitchen/screens/splashscreen2.dart';
 import 'package:shlih_kitchen/screens/splashscreen3.dart';

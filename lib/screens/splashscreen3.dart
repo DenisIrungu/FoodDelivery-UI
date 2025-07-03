@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shlih_kitchen/auth/signinorsignup.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
 
-import 'signin.dart';
+import '../auth/signin.dart';
 
 class SplashScreen3 extends StatelessWidget {
   final PageController pageController;
@@ -213,7 +214,8 @@ class SplashScreen3 extends StatelessWidget {
                     onPress: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SignIn()),
+                        MaterialPageRoute(
+                            builder: (_) => const SignInorSignUp()),
                       );
                     },
                     color: Colors.grey.shade500,

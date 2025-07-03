@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shlih_kitchen/auth/signinorsignup.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
-import 'package:shlih_kitchen/screens/signin.dart';
+import 'package:shlih_kitchen/auth/signin.dart';
 
 class SplashScreen2 extends StatelessWidget {
   final PageController pageController;
@@ -198,7 +199,7 @@ class SplashScreen2 extends StatelessWidget {
                       text: 'Continue',
                       onPress: () {
                         pageController.animateToPage(
-                          2, // Go to third splash screen
+                          2,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
@@ -213,7 +214,8 @@ class SplashScreen2 extends StatelessWidget {
                     onPress: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SignIn()),
+                        MaterialPageRoute(
+                            builder: (_) => const SignInorSignUp()),
                       );
                     },
                     color: Colors.grey.shade500,

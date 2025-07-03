@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
 import '../components/mytextfield.dart';
-import 'verificationscreen.dart';
+import '../screens/verificationscreen.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  final void Function()? onTap;
+  const SignUp({super.key, this.onTap});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -69,7 +70,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -181,18 +182,27 @@ class _SignUpState extends State<SignUp> {
                         fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 5),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/signin');
-                    },
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: Color(0xFF0F2A12),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Navigator.pushNamed(context, '/signin');
+                  //   },
+                  //   child: const Text(
+                  //     'Sign In',
+                  //     style: TextStyle(
+                  //       color: Color(0xFF0F2A12),
+                  //       fontSize: 16,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: Text('Sign In',
+                        style: TextStyle(
+                          color: Color(0xFF0F2A12),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        )),
                   ),
                 ],
               ),
