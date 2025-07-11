@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shlih_kitchen/components/my_quantity_selector.dart';
 import 'package:shlih_kitchen/models/cart_item.dart';
-import 'package:shlih_kitchen/models/foods.dart';
 import 'package:shlih_kitchen/models/restaurant.dart';
 
 class MyCartTile extends StatelessWidget {

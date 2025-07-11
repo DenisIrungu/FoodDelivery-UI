@@ -6,7 +6,8 @@ import 'package:shlih_kitchen/components/mydrawer.dart';
 import 'package:shlih_kitchen/components/mytextfield.dart';
 import 'package:shlih_kitchen/models/restaurant.dart';
 import 'package:shlih_kitchen/screens/menu/cart.dart';
-
+import 'package:shlih_kitchen/screens/verificationscreen.dart';
+import 'package:shlih_kitchen/services/auth_services.dart';
 import '../models/foods.dart';
 import 'foodpage.dart';
 
@@ -19,6 +20,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Check email verification status
+    _checkEmailVerification();
+  }
+
+  Future<void> _checkEmailVerification() async {
+    final authService = AuthServices();
+    final isVerified = await authService.isEmailVerified();
+    final user = authService.getCurrentUser();
+    if (!isVerified && user != null && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmailVerificationScreen(),
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -60,13 +82,17 @@ class _HomePageState extends State<HomePage> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Cart()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Cart()),
+              );
             },
-            icon: Icon(Icons.shopping_cart),
-            color: Theme.of(context).colorScheme.tertiary,
-            iconSize: 30,
-          )
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Theme.of(context).colorScheme.tertiary,
+              size: 30,
+            ),
+          ),
         ],
       ),
       drawer: MyDrawer(),
@@ -76,7 +102,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-
               // Search Field
               MyTextField(
                 controller: _searchController,
@@ -87,26 +112,23 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-
               const SizedBox(height: 20),
-
               _buildDeliveryCard(),
               const SizedBox(height: 20),
               _buildPromoCard(),
-
               const SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Top of the Week',
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.tertiary,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold),
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-
               SizedBox(
                 height: 220,
                 child: ListView.builder(
@@ -116,9 +138,11 @@ class _HomePageState extends State<HomePage> {
                     final item = topOfTheWeekItems[index];
                     return GestureDetector(
                       onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FoodPage(food: item))),
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FoodPage(food: item),
+                        ),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.only(right: 16.0),
                         child: Column(
@@ -149,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -182,9 +206,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               // My current location
               MyCurrentLocation(),
-
               // My description box
-              MyDescriptionBox()
+              MyDescriptionBox(),
             ],
           ),
           const Positioned(

@@ -5,8 +5,8 @@ import 'package:shlih_kitchen/screens/congrats.dart';
 import 'package:shlih_kitchen/screens/forgotpassword.dart';
 import 'package:shlih_kitchen/screens/mainscreen.dart';
 import 'package:shlih_kitchen/screens/menu/all.dart';
-import 'package:shlih_kitchen/auth/signin.dart';
-import 'package:shlih_kitchen/auth/signup.dart';
+import 'package:shlih_kitchen/services/auth/signin.dart';
+import 'package:shlih_kitchen/services/auth/signup.dart';
 import 'package:shlih_kitchen/themes/theme_provider.dart';
 
 class AppView extends StatelessWidget {
@@ -21,8 +21,8 @@ class AppView extends StatelessWidget {
       home: SplashScreenManager(),
       routes: {
         '/splash': (context) => const SplashScreenManager(),
-        '/signin': (context) => const SignIn(),
-        '/signup': (context) => const SignUp(),
+        '/signin': (context) =>  SignIn(onTap: ()=> Navigator.pushNamed(context,'/signin')),
+        '/signup': (context) =>  SignUp(onTap: ()=> Navigator.pushNamed(context,'/signin')),
         '/forgot': (context) => const ForgotPassword(),
         '/congrats': (context) => const Congrats(),
         '/home': (context) => const MainScreen(),

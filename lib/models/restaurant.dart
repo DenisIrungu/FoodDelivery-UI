@@ -1,6 +1,9 @@
 // restaurant.dart
+import 'dart:ffi';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shlih_kitchen/models/cart_item.dart';
 import 'package:shlih_kitchen/models/foods.dart';
 
@@ -20,7 +23,7 @@ class Restaurant extends ChangeNotifier {
     Foods(
       title: 'Chapati Beef',
       imagePath: 'assets/ChapatiBeef.jpg',
-      price: 10.99,
+      price: 0.99,
       category: FoodCategory.Featured,
       availableAddon: [
         Addon(name: 'Spicy sauce', price: 1.00),
@@ -241,10 +244,13 @@ class Restaurant extends ChangeNotifier {
 
   // Private cart list
   final List<CartItem> _cart = [];
+  //Delivery address(Which user can change/update)
+  String _deliveryAddress = 'Uhuru Street no 14, Damba';
 
   // Getters
   List<Foods> get menu => _menu;
   List<CartItem> get cart => _cart;
+  String get deliveryAddress => _deliveryAddress;
 
   // Get menu items by category
   List<Foods> getMenuByCategory(FoodCategory category) {
@@ -280,6 +286,12 @@ class Restaurant extends ChangeNotifier {
         selectedAddons: selectedAddon,
       ));
     }
+    notifyListeners();
+  }
+
+  //Update the delivery address
+  void updateDeliveryAddress(String newAddress) {
+    _deliveryAddress = newAddress;
     notifyListeners();
   }
 
@@ -365,5 +377,47 @@ class Restaurant extends ChangeNotifier {
     return _cart
         .where((item) => item.food == food)
         .fold(0, (count, item) => count + item.quantity);
+  }
+
+  //Generate receipt
+  String displayCartReceipt() {
+    final receipt = StringBuffer();
+    receipt.writeln('Here is your receipt.');
+    receipt.writeln();
+
+    //Format the date to include up to seconds only
+    String formattedDate =
+        DateFormat('yyyy-mm-dd HH:mm:ss').format(DateTime.now());
+
+    receipt.writeln(formattedDate);
+    receipt.writeln();
+    receipt.writeln('_____________');
+
+    for (final CartItem in _cart) {
+      receipt.writeln('${CartItem.quantity}* ${CartItem.food.title}');
+      if (CartItem.selectedAddons.isNotEmpty) {
+        receipt.writeln('Add-ons: ${_formatAddons(CartItem.selectedAddons)}');
+      }
+      receipt.writeln();
+    }
+    receipt.writeln('___________');
+    receipt.writeln();
+    receipt.writeln('Total cost:${getTotalItemCount()}');
+    receipt.writeln('Total price: ${_formatPrice(getTotalPrice())}');
+    receipt.write('Delivering to: $deliveryAddress');
+
+    return receipt.toString();
+  }
+
+  //Format double value into money
+  String _formatPrice(double price) {
+    return '\$${price.toStringAsFixed(2)}';
+  }
+
+  //Format list of addons into a string summary
+  String _formatAddons(List<Addon> addons) {
+    return addons
+        .map((Addon) => '${Addon.name} (${_formatPrice(Addon.price)})')
+        .join(',');
   }
 }

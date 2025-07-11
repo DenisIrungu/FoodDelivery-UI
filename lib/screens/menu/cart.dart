@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
 import 'package:shlih_kitchen/models/restaurant.dart';
+import 'package:shlih_kitchen/screens/payments/paymentpage.dart';
+import 'package:shlih_kitchen/screens/select_payment.dart';
 import '../../components/my_cart_tile.dart';
 
 class Cart extends StatelessWidget {
@@ -108,12 +110,10 @@ class Cart extends StatelessWidget {
               child: MyButton(
                   text: 'Go to CheckOut',
                   onPress: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Checkout not implemented yet!'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SelectPayment()));
                   },
                   color: Theme.of(context).colorScheme.onSurface),
             ),

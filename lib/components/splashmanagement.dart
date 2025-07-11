@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shlih_kitchen/auth/signin.dart';
 import 'package:shlih_kitchen/screens/splashscreen1.dart';
 import 'package:shlih_kitchen/screens/splashscreen2.dart';
 import 'package:shlih_kitchen/screens/splashscreen3.dart';
+import 'package:shlih_kitchen/services/auth_gate.dart';
 
 class SplashScreenManager extends StatefulWidget {
   const SplashScreenManager({super.key});
@@ -29,20 +29,24 @@ class _SplashScreenManagerState extends State<SplashScreenManager> {
 
   void _startAutoAdvance() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        if (_currentPage < 2) {
-          _pageController.nextPage(
-              duration: const Duration(milliseconds: 500), curve: Curves.ease);
-        } else {
-          _navigateToMainScreen();
-        }
+      if (!mounted) return;
+
+      if (_currentPage < 2) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+        _startAutoAdvance(); // Continue to next page
+      } else {
+        _navigateToMainScreen(); // Final page, navigate to AuthGate
       }
     });
   }
 
   void _navigateToMainScreen() {
+    print("Navigating to AuthGate...");
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const SignIn()),
+      MaterialPageRoute(builder: (_) => const AuthGate()),
     );
   }
 
@@ -64,15 +68,9 @@ class _SplashScreenManagerState extends State<SplashScreenManager> {
                 }
               },
               children: [
-                SplashScreen1(
-                  pageController: _pageController,
-                ),
-                SplashScreen2(
-                  pageController: _pageController,
-                ),
-                SplashScreen3(
-                  pageController: _pageController,
-                ),
+                SplashScreen1(pageController: _pageController),
+                SplashScreen2(pageController: _pageController),
+                SplashScreen3(pageController: _pageController),
               ],
             ),
           ),

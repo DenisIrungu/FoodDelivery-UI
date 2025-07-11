@@ -1,8 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:shlih_kitchen/auth/signinorsignup.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
-import 'package:shlih_kitchen/auth/signin.dart';
+import 'package:shlih_kitchen/services/auth_gate.dart';
 
 class SplashScreen2 extends StatelessWidget {
   final PageController pageController;
@@ -14,14 +13,7 @@ class SplashScreen2 extends StatelessWidget {
     final double floatingImageSize = 45;
     final double borderWidth = 10;
 
-    // Angles: Top (12), Left (9), Right (3), Bottom (6)
-    final List<double> baseAngles = [
-      -pi / 2, // Top-center
-      pi, // Left-center
-      0, // Right-center
-      pi / 2, // Bottom-center
-    ];
-
+    final List<double> baseAngles = [-pi / 2, pi, 0, pi / 2];
     final List<String> floatingImages = [
       'assets/favfood1.jpg',
       'assets/favfood2.jpg',
@@ -29,13 +21,9 @@ class SplashScreen2 extends StatelessWidget {
       'assets/favfood4.jpg',
     ];
 
-    // Calculate the radius to position images so they sit on the border exactly like the top one
-    final double containerRadius = 140; // Half of 280px container
-    final double positionRadius = containerRadius +
-        (borderWidth / 2) -
-        (floatingImageSize / 6); // Fine-tuned to match top image
-
-    // Calculate required space for the Stack to prevent clipping
+    final double containerRadius = 140;
+    final double positionRadius =
+        containerRadius + (borderWidth / 2) - (floatingImageSize / 6);
     final double stackSize =
         (containerRadius + borderWidth + floatingImageSize) * 2;
 
@@ -55,10 +43,8 @@ class SplashScreen2 extends StatelessWidget {
                     width: 50,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(
-                        'assets/log1.png',
-                        fit: BoxFit.contain,
-                      ),
+                      child:
+                          Image.asset('assets/log1.png', fit: BoxFit.contain),
                     ),
                   ),
                   const SizedBox(width: 2),
@@ -82,7 +68,6 @@ class SplashScreen2 extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Main circular background with bowl
                         Container(
                           height: 280,
                           width: 280,
@@ -90,9 +75,7 @@ class SplashScreen2 extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: Colors.grey.withOpacity(0.1),
                             border: Border.all(
-                              color: Colors.white,
-                              width: borderWidth,
-                            ),
+                                color: Colors.white, width: borderWidth),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.2),
@@ -110,16 +93,12 @@ class SplashScreen2 extends StatelessWidget {
                                 color: Colors.black,
                               ),
                               child: ClipOval(
-                                child: Image.asset(
-                                  'assets/favfood4.jpg',
-                                  fit: BoxFit.cover,
-                                ),
+                                child: Image.asset('assets/favfood4.jpg',
+                                    fit: BoxFit.cover),
                               ),
                             ),
                           ),
                         ),
-
-                        // Floating images positioned on the white border
                         for (int i = 0; i < baseAngles.length; i++)
                           Positioned(
                             left: (stackSize / 2) +
@@ -154,10 +133,8 @@ class SplashScreen2 extends StatelessWidget {
                                 ],
                               ),
                               child: ClipOval(
-                                child: Image.asset(
-                                  floatingImages[i],
-                                  fit: BoxFit.cover,
-                                ),
+                                child: Image.asset(floatingImages[i],
+                                    fit: BoxFit.cover),
                               ),
                             ),
                           ),
@@ -183,10 +160,7 @@ class SplashScreen2 extends StatelessWidget {
                     'Order your food with ease and get it delivered hot and fresh',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 16,
-                      height: 1.4,
-                      color: Colors.grey[800],
-                    ),
+                        fontSize: 16, height: 1.4, color: Colors.grey[800]),
                   ),
                 ],
               ),
@@ -198,11 +172,9 @@ class SplashScreen2 extends StatelessWidget {
                     child: MyButton(
                       text: 'Continue',
                       onPress: () {
-                        pageController.animateToPage(
-                          2,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
+                        pageController.animateToPage(2,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut);
                       },
                       color: const Color(0xFF0F2A12),
                       foregroundColor: Colors.white,
@@ -212,14 +184,13 @@ class SplashScreen2 extends StatelessWidget {
                   MyButton(
                     text: 'Sign In',
                     onPress: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                            builder: (_) => const SignInorSignUp()),
+                        MaterialPageRoute(builder: (_) => const AuthGate()),
                       );
                     },
                     color: Colors.grey.shade500,
-                    foregroundColor: Color(0xFF0F2A12),
+                    foregroundColor: const Color(0xFF0F2A12),
                   ),
                 ],
               ),

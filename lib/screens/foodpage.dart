@@ -64,7 +64,7 @@ class _FoodPageState extends State<FoodPage> {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -240,7 +240,7 @@ class _FoodPageState extends State<FoodPage> {
                               margin: EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
+                                color: Theme.of(context).colorScheme.surface,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
                                   color: widget.selectedAddons[addon] == true

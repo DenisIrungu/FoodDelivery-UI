@@ -1,0 +1,41 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "fooddelivery-36ca1",
+          "appId": "1:402056177043:android:6a8b5e88d262df3df2f466",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "fooddelivery-36ca1",
+          "configurations": {
+            "android": "1:402056177043:android:6a8b5e88d262df3df2f466",
+            "ios": "1:402056177043:ios:7eeb1e0acc6ccba3f2f466",
+            "macos": "1:402056177043:ios:7eeb1e0acc6ccba3f2f466",
+            "web": "1:402056177043:web:718da90b3a38b245f2f466",
+            "windows": "1:402056177043:web:40562501ecd7e50df2f466"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shlih_kitchen/auth/signin.dart';
-import 'package:shlih_kitchen/auth/signup.dart';
+import 'package:shlih_kitchen/services/auth/signin.dart';
+import 'package:shlih_kitchen/services/auth/signup.dart';
 
 class SignInorSignUp extends StatefulWidget {
   const SignInorSignUp({super.key});
