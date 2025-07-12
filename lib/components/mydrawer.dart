@@ -12,9 +12,9 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   void logOut() async {
-    final _authServices = AuthServices();
+    final authServices = AuthServices();
     try {
-      await _authServices.signOut(); // 👈 Just sign out
+      await authServices.signOut(); // 👈 Just sign out
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

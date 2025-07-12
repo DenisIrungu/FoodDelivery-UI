@@ -4,7 +4,6 @@ import 'package:shlih_kitchen/services/auth/signinorsignup.dart';
 import 'package:shlih_kitchen/components/mybutton.dart';
 import 'package:shlih_kitchen/services/auth_gate.dart';
 
-import '../services/auth/signin.dart';
 
 class SplashScreen3 extends StatelessWidget {
   final PageController pageController;

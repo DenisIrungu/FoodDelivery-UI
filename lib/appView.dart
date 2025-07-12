@@ -10,19 +10,22 @@ import 'package:shlih_kitchen/services/auth/signup.dart';
 import 'package:shlih_kitchen/themes/theme_provider.dart';
 
 class AppView extends StatelessWidget {
-  const AppView({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const AppView({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'S H L I H  K I T C H E N',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: Provider.of<ThemeProvider>(context).themeData,
       home: SplashScreenManager(),
       routes: {
         '/splash': (context) => const SplashScreenManager(),
-        '/signin': (context) =>  SignIn(onTap: ()=> Navigator.pushNamed(context,'/signin')),
-        '/signup': (context) =>  SignUp(onTap: ()=> Navigator.pushNamed(context,'/signin')),
+        '/signin': (context) => SignIn(onTap: () => Navigator.pushNamed(context, '/signin')),
+        '/signup': (context) => SignUp(onTap: () => Navigator.pushNamed(context, '/signin')),
         '/forgot': (context) => const ForgotPassword(),
         '/congrats': (context) => const Congrats(),
         '/home': (context) => const MainScreen(),

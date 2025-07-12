@@ -7,17 +7,20 @@ import 'package:shlih_kitchen/models/restaurant.dart';
 import 'package:shlih_kitchen/screens/payments/mpesa_provider.dart';
 import 'package:shlih_kitchen/themes/theme_provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => Restaurant()),
-        ChangeNotifierProvider(create: (context) => MpesaProvider())
+        ChangeNotifierProvider(create: (context) => MpesaProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(navigatorKey: navigatorKey),
     ),
   );
 }
