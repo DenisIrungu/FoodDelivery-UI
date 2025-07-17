@@ -124,6 +124,7 @@ class _SignUpState extends State<SignUp> {
       await authService.signUpWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text,
+        _nameController.text.trim(),
       );
 
       if (mounted) {

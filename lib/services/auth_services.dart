@@ -31,22 +31,29 @@ class AuthServices {
 
   // Sign up with email and password
   Future<UserCredential> signUpWithEmailAndPassword(
-      String email, String password) async {
-    try {
-      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      // Send verification email
-      await _sendVerificationEmail();
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message ?? 'An error occurred during sign-up',
-      );
-    }
+    String email, String password, String name) async {
+  try {
+    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
+
+    // 👇 Set the display name after account creation
+    await userCredential.user?.updateDisplayName(name);
+    await userCredential.user?.reload();
+
+    // Send verification email
+    await _sendVerificationEmail();
+
+    return userCredential;
+  } on FirebaseAuthException catch (e) {
+    throw FirebaseAuthException(
+      code: e.code,
+      message: e.message ?? 'An error occurred during sign-up',
+    );
   }
+}
+
 
   // Send verification email using Firebase Auth
   Future<void> _sendVerificationEmail() async {
