@@ -25,7 +25,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     if (!_orderSaved) {
       final restaurant = Provider.of<Restaurant>(context, listen: false);
       final receipt = restaurant.displayCartReceipt();
-      db.saveOrdersToDatabase(receipt);
+      db.saveOrdersToDatabase(receipt: receipt);
       setState(() {
         _orderSaved = true;
       });

@@ -3,18 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreServices {
-  final CollectionReference orders =
+  // Centralized Firestore collection references
+  static final CollectionReference orders =
       FirebaseFirestore.instance.collection('orders');
+  static final CollectionReference payments =
+      FirebaseFirestore.instance.collection('payments');
 
   String? get currentUserEmail => FirebaseAuth.instance.currentUser?.email;
 
-  // Generate a short, unique order ID (4-6 characters)
+  /// Generates a unique order ID of specified length (default 6 characters).
   Future<String> generateOrderId({int length = 6}) async {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random();
     String orderId;
 
-    // Keep generating until a unique ID is found
     while (true) {
       orderId =
           List.generate(length, (_) => chars[random.nextInt(chars.length)])
@@ -29,39 +31,52 @@ class FirestoreServices {
     return orderId;
   }
 
-  // Save the orders to the database
-  Future<DocumentReference> saveOrdersToDatabase(String receipt,
-      {String? mpesaReceiptNumber}) async {
-    final userEmail = currentUserEmail;
-
-    if (userEmail == null) {
+  /// Saves an order to the 'orders' collection, matching the structure in index.js.
+  Future<DocumentReference> saveOrdersToDatabase({
+    required String receipt,
+    String? mpesaReceiptNumber,
+    String? userEmail,
+  }) async {
+    final effectiveUserEmail = userEmail ?? currentUserEmail;
+    if (effectiveUserEmail == null) {
       throw Exception('User must be authenticated to save orders');
     }
 
-    // Generate unique order ID
     final orderId = await generateOrderId();
-
-    // Calculate estimated delivery time (45 minutes from now)
-    final estimatedDeliveryTime = DateTime.now().add(Duration(minutes: 45));
+    final estimatedDeliveryTime =
+        DateTime.now().add(const Duration(minutes: 45));
 
     return await orders.add({
       'orderId': orderId,
-      'userEmail': userEmail,
-      'date': DateTime.now(),
+      'userEmail': effectiveUserEmail,
       'orders': receipt,
+      'ReceiptNumber': mpesaReceiptNumber ?? '',
       'delivery_status': 'pending',
       'estimatedDeliveryTime': estimatedDeliveryTime,
-      if (mpesaReceiptNumber != null) 'MpesaReceiptNumber': mpesaReceiptNumber,
+      'date': FieldValue.serverTimestamp(),
     });
   }
 
-  // Get real-time stream of pending orders for current user
+  /// Saves temporary payment data to the 'payments' collection.
+  Future<void> savePaymentToDatabase({
+    required String checkoutRequestId,
+    required String receipt,
+    String? userEmail,
+  }) async {
+    final effectiveUserEmail = userEmail ?? 'not-provided@example.com';
+    await payments.doc(checkoutRequestId).set({
+      'orderId': checkoutRequestId,
+      'userEmail': effectiveUserEmail,
+      'orders': receipt,
+      'status': 'initiating',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Retrieves a stream of pending orders for the current user.
   Stream<QuerySnapshot> getPendingOrdersStream() {
     final userEmail = currentUserEmail;
-
-    if (userEmail == null) {
-      return Stream.empty();
-    }
+    if (userEmail == null) return Stream.empty();
 
     return orders
         .where('userEmail', isEqualTo: userEmail)
@@ -69,13 +84,10 @@ class FirestoreServices {
         .snapshots();
   }
 
-  // Get all orders for current user (for order history)
+  /// Retrieves a stream of all orders for the current user, sorted by date.
   Stream<QuerySnapshot> getUserOrdersStream() {
     final userEmail = currentUserEmail;
-
-    if (userEmail == null) {
-      return Stream.empty();
-    }
+    if (userEmail == null) return Stream.empty();
 
     return orders
         .where('userEmail', isEqualTo: userEmail)
@@ -83,13 +95,10 @@ class FirestoreServices {
         .snapshots();
   }
 
-  // Get orders by status for current user
+  /// Retrieves a stream of orders by status for the current user.
   Stream<QuerySnapshot> getOrdersByStatus(String status) {
     final userEmail = currentUserEmail;
-
-    if (userEmail == null) {
-      return Stream.empty();
-    }
+    if (userEmail == null) return Stream.empty();
 
     return orders
         .where('userEmail', isEqualTo: userEmail)
@@ -98,40 +107,36 @@ class FirestoreServices {
         .snapshots();
   }
 
-  // Update delivery status
+  /// Updates the delivery status of an order.
   Future<void> updateDeliveryStatus(String orderId, String newStatus) async {
     await orders.doc(orderId).update({
       'delivery_status': newStatus,
     });
   }
 
-  // Get single order by ID
+  /// Retrieves a single order by its document ID.
   Future<DocumentSnapshot> getOrderById(String orderId) async {
     return await orders.doc(orderId).get();
   }
 
-  // Get order by custom orderId field
+  /// Retrieves a single order by its custom orderId field.
   Future<DocumentSnapshot?> getOrderByOrderId(String orderId) async {
     try {
       final querySnapshot =
           await orders.where('orderId', isEqualTo: orderId).limit(1).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        return querySnapshot.docs.first;
-      }
-      return null;
+      return querySnapshot.docs.isNotEmpty ? querySnapshot.docs.first : null;
     } catch (e) {
       print('Error fetching order by orderId: $e');
       return null;
     }
   }
 
-  // Delete order (if needed)
+  /// Deletes an order by its document ID.
   Future<void> deleteOrder(String orderId) async {
     await orders.doc(orderId).delete();
   }
 
-  // Get orders by email (useful for admin functionality)
+  /// Retrieves a stream of orders for a specific email (useful for admin).
   Stream<QuerySnapshot> getOrdersByEmail(String email) {
     return orders
         .where('userEmail', isEqualTo: email)
@@ -139,6 +144,7 @@ class FirestoreServices {
         .snapshots();
   }
 
+  /// Retrieves a stream of all pending orders.
   Stream<QuerySnapshot> getAllPendingOrders() {
     return orders
         .where('delivery_status', isEqualTo: 'pending')
@@ -146,6 +152,7 @@ class FirestoreServices {
         .snapshots();
   }
 
+  /// Fetches the latest order for a specific user.
   Future<Map<String, dynamic>?> fetchLatestOrderForUser(
       String userEmail) async {
     try {
@@ -158,12 +165,10 @@ class FirestoreServices {
       if (querySnapshot.docs.isNotEmpty) {
         final doc = querySnapshot.docs.first;
         final data = doc.data() as Map<String, dynamic>;
-        // Include both Firestore document ID and custom orderId
         data['documentId'] = doc.id;
         return data;
-      } else {
-        return null;
       }
+      return null;
     } catch (e) {
       print('Error fetching latest order: $e');
       return null;
