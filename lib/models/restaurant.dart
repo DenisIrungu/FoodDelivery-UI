@@ -22,7 +22,7 @@ class Restaurant extends ChangeNotifier {
     Foods(
       title: 'Chapati Beef',
       imagePath: 'assets/ChapatiBeef.jpg',
-      price: 0.99,
+      price: 1.00,
       category: FoodCategory.Featured,
       availableAddon: [
         Addon(name: 'Spicy sauce', price: 1.00),

@@ -8,6 +8,7 @@ import 'package:shlih_kitchen/models/restaurant.dart';
 import 'package:shlih_kitchen/screens/menu/cart.dart';
 import 'package:shlih_kitchen/screens/verificationscreen.dart';
 import 'package:shlih_kitchen/services/auth_services.dart';
+import 'package:shlih_kitchen/services/location/location_services.dart';
 import '../models/foods.dart';
 import 'foodpage.dart';
 
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Check email verification status
     _checkEmailVerification();
+    _initializeUserLocation();
   }
 
   Future<void> _checkEmailVerification() async {
@@ -40,6 +42,26 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
+  }
+
+  //Initializing the user's Location
+  Future<void> _initializeUserLocation() async {
+    final position = await LocationService.getCurrentLocation();
+
+    if (position == null) {
+      debugPrint("❌ Location permission denied or service off");
+      return;
+    }
+
+    debugPrint(
+        "✅ Latitude: ${position.latitude}, Longitude: ${position.longitude}");
+
+    final address = await LocationService.getAddressFromCoordinates(position);
+    debugPrint("📍 Resolved Address: $address");
+
+    if (!mounted) return;
+
+    context.read<Restaurant>().updateDeliveryAddress(address);
   }
 
   @override

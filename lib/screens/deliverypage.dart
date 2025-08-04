@@ -12,17 +12,24 @@ class DeliveryPage extends StatefulWidget {
 }
 
 class _DeliveryPageState extends State<DeliveryPage> {
-  //Get access to db
-  FirestoreServices db = FirestoreServices();
+  final FirestoreServices db = FirestoreServices();
+  bool _orderSaved = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _submitOrderOnce();
+  }
 
-    //If we get to this page, submit order to firestore db
-    String receipt = context.read<Restaurant>().displayCartReceipt();
-    db.saveOrdersToDatabase(receipt);
+  void _submitOrderOnce() {
+    if (!_orderSaved) {
+      final restaurant = Provider.of<Restaurant>(context, listen: false);
+      final receipt = restaurant.displayCartReceipt();
+      db.saveOrdersToDatabase(receipt);
+      setState(() {
+        _orderSaved = true;
+      });
+    }
   }
 
   @override
@@ -31,7 +38,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-        //title: Text('Delivery in progress..'),
         centerTitle: true,
       ),
       bottomNavigationBar: _buildBottomNavBar(context),
@@ -48,67 +54,72 @@ class _DeliveryPageState extends State<DeliveryPage> {
     return Container(
       height: 100,
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-      padding: EdgeInsets.all(25),
+        color: Theme.of(context).colorScheme.secondary,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(40),
+          topRight: Radius.circular(40),
+        ),
+      ),
+      padding: const EdgeInsets.all(25),
       child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                shape: BoxShape.circle),
-            child: IconButton(onPressed: () {}, icon: Icon(Icons.person)),
+              color: Theme.of(context).colorScheme.surface,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.person),
+            ),
           ),
-          SizedBox(
-            width: 10,
-          ),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Denis Irungu',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16, // Reduced from 18
-                      color: Theme.of(context).colorScheme.inversePrimary),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
                 ),
                 Text(
                   'Driver',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14, // Reduced from 18
-                      color: Theme.of(context).colorScheme.primary),
-                )
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
               ],
             ),
           ),
           Row(
             children: [
-              //Message
               Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    shape: BoxShape.circle),
+                  color: Theme.of(context).colorScheme.surface,
+                  shape: BoxShape.circle,
+                ),
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.message),
+                  icon: const Icon(Icons.message),
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              //Call
+              const SizedBox(width: 10),
               Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    shape: BoxShape.circle),
+                  color: Theme.of(context).colorScheme.surface,
+                  shape: BoxShape.circle,
+                ),
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.call),
+                  icon: const Icon(Icons.call),
                   color: Colors.green,
                 ),
               ),
