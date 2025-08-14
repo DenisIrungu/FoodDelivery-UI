@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shlih_kitchen/models/restaurant.dart';
-import 'package:shlih_kitchen/screens/payments/mpesa_provider.dart';
+import 'package:shlih_kitchen/screens/payments/mpesa/mpesa_provider.dart';
 
 class MpesaPaymentPage extends StatefulWidget {
   const MpesaPaymentPage({super.key});

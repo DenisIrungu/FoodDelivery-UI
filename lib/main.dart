@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shlih_kitchen/app.dart';
 import 'package:shlih_kitchen/firebase_options.dart';
 import 'package:shlih_kitchen/models/restaurant.dart';
-import 'package:shlih_kitchen/screens/payments/mpesa_provider.dart';
+import 'package:shlih_kitchen/screens/payments/mpesa/mpesa_provider.dart';
+import 'package:shlih_kitchen/screens/payments/redeem/redemptionprovider.dart';
 import 'package:shlih_kitchen/services/database/firestore.dart';
 import 'package:shlih_kitchen/themes/theme_provider.dart';
 
@@ -30,6 +31,9 @@ void main() async {
 
         // M-Pesa provider for payment processing
         ChangeNotifierProvider(create: (context) => MpesaProvider()),
+
+        // Redemption provider for points redemption
+        ChangeNotifierProvider(create: (context) => RedemptionProvider()),
       ],
       child: MyApp(navigatorKey: navigatorKey),
     ),

@@ -10,6 +10,7 @@ const db = admin.firestore();
 const collections = {
   orders: db.collection('orders'),
   payments: db.collection('payments'),
+  rewards: db.collection('rewards'), // Replaced users with rewards
 };
 
 // Safaricom sandbox credentials
@@ -18,6 +19,34 @@ const consumerSecret = 'Vk0nh2fIghXdeZ2ITGoJjGyyypLzSQkmyPfDS230Wb6FAySiF56Z5G2M
 const passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 const shortCode = '174379';
 const callbackURL = 'https://us-central1-fooddelivery-36ca1.cloudfunctions.net/mpesaCallback';
+
+// Helper function to add points to rewards
+async function addPointsToUser(userEmail, pointsToAdd) {
+  try {
+    await db.runTransaction(async (transaction) => {
+      const docRef = collections.rewards.doc(userEmail);
+      const docSnapshot = await transaction.get(docRef);
+
+      if (!docSnapshot.exists) {
+        transaction.set(docRef, {
+          userEmail: userEmail,
+          points: pointsToAdd,
+        });
+        console.log(`Created rewards document for ${userEmail} with ${pointsToAdd} points`);
+      } else {
+        const data = docSnapshot.data();
+        const currentPoints = data.points || 0.0;
+        transaction.update(docRef, {
+          points: admin.firestore.FieldValue.increment(pointsToAdd),
+        });
+        console.log(`Updated ${userEmail}: Added ${pointsToAdd} points, new total: ${currentPoints + pointsToAdd}`);
+      }
+    });
+  } catch (e) {
+    console.error(`Error adding points to ${userEmail}:`, e);
+    throw new Error(`Failed to add points: ${e.message}`);
+  }
+}
 
 // STK PUSH REQUEST - Save temporary data to payments, userEmail optional
 exports.stkPush = functions.https.onRequest(async (req, res) => {
@@ -221,7 +250,7 @@ exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
     const resultCode = result?.ResultCode;
     const resultDesc = result?.ResultDesc;
 
-    const amount = metadata.find(i => i.Name === 'Amount')?.Value || 0;
+    const amount = parseFloat(metadata.find(i => i.Name === 'Amount')?.Value) || 0.0;
     const receiptNo = metadata.find(i => i.Name === 'MpesaReceiptNumber')?.Value || '';
     const phone = metadata.find(i => i.Name === 'PhoneNumber')?.Value || '';
     const transactionDate = metadata.find(i => i.Name === 'TransactionDate')?.Value || '';
@@ -252,14 +281,17 @@ exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
 
     if (resultCode === 0) {
       try {
+        const pointsEarned = amount / 100; // 1 point per KES 100
         const paymentData = {
           ReceiptNumber: receiptNo,
           userEmail,
           orders,
           orderId: checkoutRequestId,
           delivery_status: 'pending',
-          estimatedDeliveryTime: new Date(Date.now() + 45 * 60 * 1000),
+          estimatedDeliveryTime: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 45 * 60 * 1000)),
           date: admin.firestore.FieldValue.serverTimestamp(),
+          pointsEarned,
+          paymentMethod: 'mpesa',
         };
 
         console.log('💾 About to save payment with orderId:', checkoutRequestId);
@@ -272,13 +304,27 @@ exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
           orders,
           orderId: checkoutRequestId,
           delivery_status: 'pending',
-          estimatedDeliveryTime: new Date(Date.now() + 45 * 60 * 1000),
+          estimatedDeliveryTime: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 45 * 60 * 1000)),
           date: admin.firestore.FieldValue.serverTimestamp(),
+          pointsEarned,
+          paymentMethod: 'mpesa',
         };
 
         console.log('💾 About to save order with orderId:', checkoutRequestId);
         await collections.orders.doc(checkoutRequestId).set(orderData);
         console.log('✅ Order saved with orderId:', checkoutRequestId);
+
+        // Update rewards points
+        if (userEmail !== 'not-provided@example.com') {
+          try {
+            await addPointsToUser(userEmail, pointsEarned);
+            console.log(`✅ Rewards points updated for ${userEmail}: ${pointsEarned} points added`);
+          } catch (e) {
+            console.error(`❌ Failed to update rewards for ${userEmail}:`, e);
+          }
+        } else {
+          console.warn('⚠️ No valid userEmail provided, skipping rewards update');
+        }
       } catch (firestoreError) {
         console.error('❌ Firestore Error:', firestoreError);
       }
