@@ -14,10 +14,12 @@ class PendingOrders extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Pending orders',
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.tertiary),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -32,6 +34,7 @@ class PendingOrders extends StatelessWidget {
 
           // Handle error state
           if (snapshot.hasError) {
+            print('Error in StreamBuilder: ${snapshot.error}');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,8 +128,9 @@ class PendingOrders extends StatelessWidget {
       BuildContext context, String orderId, Map<String, dynamic> data) {
     try {
       // Parse the receipt
-      final receipt = data['orders'] as String? ?? '';
+      final receipt = data['receipt'] as String? ?? '';
       final parsedOrder = OrderParser.parseReceipt(receipt);
+      print('Parsed order for orderId=$orderId: $parsedOrder');
 
       // Get timestamps
       final orderDate =
@@ -139,6 +143,10 @@ class PendingOrders extends StatelessWidget {
       final deliveryTimeText =
           OrderParser.getFormattedDeliveryTime(estimatedDeliveryTime);
       final orderDateText = OrderParser.formatOrderDate(orderDate);
+
+      // Safeguard orderId substring
+      final safeOrderId =
+          orderId.length >= 8 ? orderId.substring(0, 8) : orderId;
 
       return Card(
         margin: const EdgeInsets.only(bottom: 16),
@@ -156,7 +164,7 @@ class PendingOrders extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order #${orderId.substring(0, 8)}',
+                    'Order #$safeOrderId',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -387,7 +395,11 @@ class PendingOrders extends StatelessWidget {
         ),
       );
     } catch (e) {
-      // Handle parsing errors gracefully
+      print('Error building order card for orderId=$orderId: $e');
+      // Safeguard orderId substring in error case
+      final safeOrderId =
+          orderId.length >= 8 ? orderId.substring(0, 8) : orderId;
+
       return Card(
         margin: const EdgeInsets.only(bottom: 16),
         child: Padding(
@@ -410,7 +422,7 @@ class PendingOrders extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Order ID: ${orderId.substring(0, 8)}',
+                'Order ID: $safeOrderId',
                 style: TextStyle(
                   fontSize: 14,
                   color:
